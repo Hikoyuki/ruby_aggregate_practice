@@ -7,8 +7,24 @@ class PopularMessageAggregator
 
   # 実装してください
   def exec
-    # dummy
-    
+    slack_datas = channel_names.map do |channel|
+      data = load(channel)
+    end
+
+    message_datas = slack_datas.map do |data|
+      message = data['messages']
+      message.map do |ms|
+        next if ms.select {|k,v| k == 'reactions' } == {}
+        {
+          text: ms['text'],
+          reaction_count: ms['reactions'][0]['count']
+        }
+      end.flatten
+    end.flatten
+
+    mssage_reaction = message_datas.delete_if {|md| md == nil }
+
+    mssage_reaction.max_by(1){|k| k[:reaction_count]}
   end
 
   def load(channel_name)
