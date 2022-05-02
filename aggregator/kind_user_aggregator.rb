@@ -9,18 +9,18 @@ class KindUserAggregator
 
   # 実装してください
   def exec
-    slack_datas = channel_names.map do |channel|
+    slack_data = channel_names.map do |channel|
       data = load(channel)
     end
 
-    message_datas = slack_datas.map do |data|
+    message_data = slack_data.map do |data|
       message = data['messages']
       message.map do |ms|
         ms.select {|k,v| k == 'reactions' }
       end.flatten
     end.flatten
 
-    mssage_reaction = message_datas.delete_if {|md| md == {} }
+    mssage_reaction = message_data.delete_if {|md| md == {} }
 
     mssage_reaction_data = mssage_reaction.map do |mr|
       {
