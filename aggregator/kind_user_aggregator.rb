@@ -20,16 +20,16 @@ class KindUserAggregator
       end.flatten
     end.flatten
 
-    mssage_reaction = message_data.delete_if {|md| md == {} }
+    message_reaction = message_data.delete_if {|md| md == {} }
 
-    mssage_reaction_data = mssage_reaction.map do |mr|
+    message_reaction_data = message_reaction.map do |mr|
       {
         user_id: mr['reactions'][0]['users'],
         reaction_count: mr['reactions'][0]['count']
       }
     end
 
-    mssage_reaction_data.max_by(3) { |k| k[:reaction_count] }
+    message_reaction_data.max_by(3) { |k| k[:reaction_count] }
   end
 
   def load(channel_name)

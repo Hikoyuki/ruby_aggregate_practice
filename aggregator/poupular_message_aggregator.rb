@@ -22,9 +22,9 @@ class PopularMessageAggregator
       end.flatten
     end.flatten
 
-    mssage_reaction = message_data.delete_if {|md| md == nil }
+    message_reaction = message_data.delete_if {|md| md == nil }
 
-    mssage_reaction.max_by(1){|k| k[:reaction_count]}
+    message_reaction.max_by(1){|k| k[:reaction_count]}
   end
 
   def load(channel_name)
