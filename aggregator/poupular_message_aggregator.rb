@@ -8,7 +8,7 @@ class PopularMessageAggregator
   # 実装してください
   def exec
     slack_data = channel_names.map do |channel|
-      data = load(channel)
+      load(channel)
     end
 
     message_data = slack_data.map do |data|
@@ -17,7 +17,7 @@ class PopularMessageAggregator
         next if ms.select {|k,v| k == 'reactions' } == {}
         {
           text: ms['text'],
-          reaction_count: ms['reactions'][0]['count']
+          reaction_count: ms['reactions'].map { |reaction| reaction['count'] }.inject { |sum, count| sum + count }
         }
       end.flatten
     end.flatten
