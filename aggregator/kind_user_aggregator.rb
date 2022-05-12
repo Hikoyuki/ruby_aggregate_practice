@@ -13,20 +13,18 @@ class KindUserAggregator
       load(channel)
     end
 
-    message_data = slack_data.map do |data|
+    message_data = slack_data.flat_map do |data|
       message = data['messages']
-      message_reaction = message.map do |ms|
-        ms.select {|k,v| k == 'reactions' }
-      end.flatten
-    end.flatten
-
-    message_reaction = message_data.delete_if {|md| md == {} }
-
-    reaction_users = message_reaction.flat_map do |mr|
-      mr['reactions'][0]['users']
+      message_reaction = message.flat_map do |ms|
+        ms['reactions']
+      end
+      message_reaction = message_reaction.delete_if {|md| md == nil }
+      message_reaction.flat_map do |mr|
+        mr['users']
+      end
     end
-    sum_user = reaction_users.group_by(&:itself).map{|k, v| [k, v.size]}.to_h
 
+    sum_user = message_data.group_by(&:itself).map{|k, v| [k, v.size]}.to_h
     message_reaction_data = sum_user.map do |sm|
       {
         user_id: sm.first,
